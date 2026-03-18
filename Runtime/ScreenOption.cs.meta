@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b722b625f55a61a4f90b6e8af4904da4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - targetDisplayManager: {instanceID: 0}
+  - dropdownPrefab: {fileID: 2176658171351381341, guid: cf053e80708f00f4fb87c439dd00a8c6,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

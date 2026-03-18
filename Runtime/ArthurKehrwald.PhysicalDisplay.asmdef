@@ -1,7 +1,9 @@
 {
     "name": "ArthurKehrwald.PhysicalDisplay",
     "rootNamespace": "ArthurKehrwald.PhysicalDisplay",
-    "references": [],
+    "references": [
+        "ArthurKehrwald.UserSettings"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
