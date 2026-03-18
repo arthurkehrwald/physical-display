@@ -1,0 +1,11 @@
+{
+  "name": "com.arthurkehrwald.physical-display",
+  "version": "1.0.0",
+  "description": "Model physical displays for augmented reality applications",
+  "author": {
+    "name": "Arthur Kehrwald"
+  },
+  "displayName": "Physical Display",
+  "unity": "2020.3",
+  "dependencies": {}
+}
