@@ -58,6 +58,49 @@ namespace ArthurKehrwald.PhysicalDisplay
         public Vector3 TopRightCorner => transform.TransformPoint(new Vector3(0.5f, 0.5f, 0f));
         public Vector3 Center => transform.position;
 
+        public Vector2Int Resolution
+        {
+            get
+            {
+                var targetDisplay = GetTargetDisplay();
+                if (targetDisplay == null)
+                    return new Vector2Int(Screen.width, Screen.height);
+
+                return new Vector2Int(targetDisplay.renderingWidth, targetDisplay.renderingHeight);
+            }
+            set
+            {
+                if (value == Resolution)
+                    return;
+                var targetDisplay = GetTargetDisplay();
+                if (targetDisplay == null)
+                    return;
+#if UNITY_EDITOR
+                Screen.SetResolution(value.x, value.y, Screen.fullScreenMode);
+#elif UNITY_STANDALONE_WIN
+                targetDisplay.SetParams(value.x, value.y, 0, 0);
+#elif UNITY_IOS || UNITY_ANDROID
+                targetDisplay.SetRenderingResolution(value.x, value.y);
+#else
+                if (MappingIndex == 0)
+                    Screen.SetResolution(value.x, value.y, Screen.fullScreenMode);
+                else
+                    Debug.LogError("Unity provides no API to set screen resolution of a non-primary display on this platform.");
+#endif
+            }
+        }
+
+        private Display GetTargetDisplay()
+        {
+#if UNITY_EDITOR
+            return Display.main;
+#endif
+            if (MappingIndex < 0 || MappingIndex >= Display.displays.Length)
+                return null;
+
+            return Display.displays[MappingIndex];
+        }
+
         private void Awake()
         {
             ActivateDisplayIfNeeded();
