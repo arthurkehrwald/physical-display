@@ -4,15 +4,14 @@ namespace ArthurKehrwald.PhysicalDisplay
 {
     public class TargetDisplayCycler : MonoBehaviour
     {
-        [SerializeField]
-        private TargetDisplayManager targetDisplayManager;
+        [SerializeField] private PhysicalDisplay physicalDisplay;
 
 #if !UNITY_EDITOR
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-            targetDisplayManager.TargetDisplayIndex = (targetDisplayManager.TargetDisplayIndex + 1) % Display.displays.Length;
-    }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+                physicalDisplay.MappingIndex = (physicalDisplay.MappingIndex + 1) % Display.displays.Length;
+        }
 #endif
     }
 }

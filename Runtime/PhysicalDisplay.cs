@@ -1,9 +1,29 @@
+using System;
 using UnityEngine;
 
 namespace ArthurKehrwald.PhysicalDisplay
 {
     public class PhysicalDisplay : MonoBehaviour
     {
+        [SerializeField]
+        [Tooltip("Index of the physical display in the Unity display array represented by this object")]
+        private int mappingIndex;
+
+        public int MappingIndex
+        {
+            get => mappingIndex;
+            set
+            {
+                if (mappingIndex == value) return;
+                GL.Clear(true, true, Color.black);
+                mappingIndex = value;
+                ActivateDisplayIfNeeded();
+                MappingIndexChanged?.Invoke(this, mappingIndex);
+            }
+        }
+
+        public event EventHandler<int> MappingIndexChanged;
+
         public float Width
         {
             get => Vector3.Distance(BottomLeftCorner, BottomRightCorner);
@@ -38,6 +58,11 @@ namespace ArthurKehrwald.PhysicalDisplay
         public Vector3 TopRightCorner => transform.TransformPoint(new Vector3(0.5f, 0.5f, 0f));
         public Vector3 Center => transform.position;
 
+        private void Awake()
+        {
+            ActivateDisplayIfNeeded();
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -47,7 +72,7 @@ namespace ArthurKehrwald.PhysicalDisplay
             Gizmos.DrawLine(TopLeftCorner, BottomLeftCorner);
         }
 #endif
-        
+
         public static PhysicalDisplay FindScreenWithTag(string tag)
         {
             GameObject go;
@@ -57,24 +82,32 @@ namespace ArthurKehrwald.PhysicalDisplay
             }
             catch (UnityException)
             {
-                Debug.LogError($"Add the tag '{tag}' in the tag manager.");
+                Debug.LogWarning($"Add the tag '{tag}' in the tag manager.");
                 return null;
             }
 
             if (go == null)
             {
-                Debug.LogError($"Add the tag '{tag}' to an object in your scene.");
+                Debug.LogWarning($"Add the tag '{tag}' to an object in your scene.");
                 return null;
             }
 
             if (!go.TryGetComponent(out PhysicalDisplay screen))
             {
-                Debug.LogError(
+                Debug.LogWarning(
                     $"Add the component {typeof(PhysicalDisplay)} to the object tagged '{tag}' in your scene.");
                 return null;
             }
 
             return screen;
+        }
+
+        private void ActivateDisplayIfNeeded()
+        {
+#if !UNITY_EDITOR
+            if (MappingIndex >= 0 && MappingIndex < Display.displays.Length)
+                Display.displays[MappingIndex].Activate();
+#endif
         }
     }
 }

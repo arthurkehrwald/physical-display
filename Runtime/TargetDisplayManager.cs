@@ -1,26 +1,27 @@
-using System;
 using UnityEngine;
 
 namespace ArthurKehrwald.PhysicalDisplay
 {
     public abstract class TargetDisplayManager : MonoBehaviour
     {
-        public event EventHandler<int> TargetDisplayChanged;
-        private int _lastReportedTargetDisplay;
+        [SerializeField] private PhysicalDisplay target;
+        
         public abstract int TargetDisplayIndex { get; set; }
 
-        private void Awake()
+        private void OnEnable()
         {
-            _lastReportedTargetDisplay = TargetDisplayIndex;
+            TargetDisplayIndex = target.MappingIndex;
+            target.MappingIndexChanged += TargetOnMappingIndexChanged;
+        }
+        
+        private void OnDisable()
+        {
+            target.MappingIndexChanged -= TargetOnMappingIndexChanged;
         }
 
-        private void Update()
+        private void TargetOnMappingIndexChanged(object sender, int index)
         {
-            if (TargetDisplayIndex != _lastReportedTargetDisplay)
-            {
-                _lastReportedTargetDisplay = TargetDisplayIndex;
-                TargetDisplayChanged?.Invoke(this, TargetDisplayIndex);
-            }
+            TargetDisplayIndex = index;
         }
     }
 }
